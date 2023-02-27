@@ -10,7 +10,7 @@ router = APIRouter()
 
 @router.post('/telegram/login', response_model=SuccessResponse, status_code=status.HTTP_200_OK, summary='Логин в телеграм (выполнять после отправки кода)')
 async def login_telegram(phone_number: str, phone_code: str, phone_code_hash: str, user = Depends(current_user)):
-    client = await get_client(user['user'], True, user['account'])
+    client = await get_client(user['user'], True, user.get('account'))
     try:
         await client.connect()
     except ConnectionError:
@@ -25,7 +25,7 @@ async def login_telegram(phone_number: str, phone_code: str, phone_code_hash: st
 
 @router.post('/telegram/send-code', response_model=PhoneHashCode, status_code=status.HTTP_200_OK, summary='Отправить код для логина (в ответе phone_code_hash)')
 async def send_code(phone_number: str, user = Depends(current_user)):
-    client = await get_client(user['user'], True, user['account'])
+    client = await get_client(user['user'], True, user.get('account'))
     try:
         await client.connect()
     except ConnectionError:

@@ -56,7 +56,7 @@ async def send_location(chat_id: str, latitude: float, longitude: float, user = 
 @router.post('/telegram/send-photo', response_model=SuccessResponse, status_code=status.HTTP_200_OK, summary='Отправить фото')
 async def send_photo(chat_id: str, photo_url: str, caption: str = 'caption', user = Depends(current_user)):
     try:
-        client = await get_client(user['user'], account=user['account'])
+        client = await get_client(user['user'], account=user.get('account'))
         await client.send_photo(chat_id, photo_url, caption)
         return {'ok': True}
     except RPCError as e:
@@ -66,7 +66,7 @@ async def send_photo(chat_id: str, photo_url: str, caption: str = 'caption', use
 @router.post('/telegram/send-video', response_model=SuccessResponse, status_code=status.HTTP_200_OK, summary='Отправить видео')
 async def send_video(chat_id: str, video_url: str, caption: str = 'caption', file_name: str = 'file_name', user = Depends(current_user)):
     try:
-        client = await get_client(user['user'], account=user['account'])
+        client = await get_client(user['user'], account=user.get('account'))
         await client.send_video(chat_id, video_url, caption, file_name=file_name)
         return {'ok': True}
     except RPCError as e:
@@ -76,7 +76,7 @@ async def send_video(chat_id: str, video_url: str, caption: str = 'caption', fil
 @router.post('/telegram/send-voice', response_model=SuccessResponse, status_code=status.HTTP_200_OK, summary='Отправить аудио')
 async def send_voice(chat_id: str, voice_url: str, caption: str = 'caption', user = Depends(current_user)):
     try:
-        client = await get_client(user['user'], account=user['account'])
+        client = await get_client(user['user'], account=user.get('account'))
         await client.send_voice(chat_id, voice_url, caption)
         return {'ok': True}
     except RPCError as e:
@@ -86,7 +86,7 @@ async def send_voice(chat_id: str, voice_url: str, caption: str = 'caption', use
 @router.post('/telegram/send-cached-media', response_model=SuccessResponse, status_code=status.HTTP_200_OK, summary='Отправить файл с кэша')
 async def send_cached_media(chat_id: str, file_id: str, caption: str = 'caption', user = Depends(current_user)):
     try:
-        client = await get_client(user['user'], account=user['account'])
+        client = await get_client(user['user'], account=user.get('account'))
         await client.send_cached_media(chat_id, file_id, caption)
         return {'ok': True}
     except RPCError as e:
@@ -96,7 +96,7 @@ async def send_cached_media(chat_id: str, file_id: str, caption: str = 'caption'
 @router.post('/telegram/send-contact', response_model=SuccessResponse, status_code=status.HTTP_200_OK, summary='Отправить контакт')
 async def send_contact(chat_id: str, phone_number: str, first_name: str, last_name: str, user = Depends(current_user)):
     try:
-        client = await get_client(user['user'], account=user['account'])
+        client = await get_client(user['user'], account=user.get('account'))
         await client.send_contact(chat_id, phone_number, first_name, last_name)
         return {'ok': True}
     except RPCError as e:
@@ -106,7 +106,7 @@ async def send_contact(chat_id: str, phone_number: str, first_name: str, last_na
 @router.post('/telegram/mass/send-message', status_code=status.HTTP_200_OK, summary='Рассылка по контактам телеграм аккаунта (каждые 30 сек)')
 async def send_mass_message(user = Depends(current_user)):
     try:
-        client = await get_client(user['user'], account=user['account'])
+        client = await get_client(user['user'], account=user.get('account'))
         scheduler = AsyncIOScheduler()
         scheduler.add_job(distribution, "interval", seconds=30, args=[client])
         scheduler.start()
