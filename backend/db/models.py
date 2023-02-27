@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
-from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
+from .db import Base
 
 
 class User(Base):
